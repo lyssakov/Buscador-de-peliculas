@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>OMDB.</title>
+    <script src="./jquery-3.2.1.min.js"></script>
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
+    <script>
+        $(function () { 
+            $("button").click(function () {
+                let cadena = "";
+                let buscar = $("#busca").val();
+                $("#cambia").html("<img src='ajax-loader.gif'>");
+               
+                $.get("http://www.omdbapi.com/",
+                { 
+                 s: buscar,
+                 apikey: '6c1c7495' 
+                } ,
+                function (datos_devueltos, estado) {
+                    if (estado == "success") {
+                        console.log("funciona");
+                        console.log(datos_devueltos);
+                        if(datos_devueltos.Error){
+                            cadena = cadena + datos_devueltos.Error + "<br>" ;
+                        }else{
+                            for(let i of datos_devueltos.Search){
+                            cadena = cadena + "<div class=' rounded col w-50 text-center m-1 p-3 bg-dark'>"
+                            cadena = cadena + "<img src="+ i.Poster+" width='200px'>" + "<br>" ;
+                            cadena = cadena + "Título: " + i.Title + "<br>" ;
+                            cadena = cadena + "Año: " + i.Year + "<br>";
+                            cadena = cadena + "<a href=https://www.imdb.com/title/" + i.imdbID + " target='_blank'>Ver más...</a>" + "<br>";
+                            cadena = cadena + "</div>"
+                            }
+                            
+                        }
+                        console.log(cadena);
+                        $("#cambia").html(cadena);
+                    }
+                    console.log(datos_devueltos);
+
+                }, "json");
+            });
+        });
+    </script>
+</head>
+<body class="container bg-secondary">
+    <div class="d-flex flex-column align-items-center ">
+        <h1 class="text-white">Introduce una película</h1>
+        <div class="d-flex gap-1">
+            <input type="text" id="busca"></input>
+            <button type="button">Buscar</button>
+        </div>
+    </div>
+    <div >
+        <div class="container-fluid row w-auto text-light" id="cambia"> </div>
+    </div>
+</body>
+</html>
